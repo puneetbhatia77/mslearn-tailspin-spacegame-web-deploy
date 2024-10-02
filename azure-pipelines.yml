@@ -116,8 +116,8 @@ stages:
               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
 
 - stage: 'Production'
-  displayName: 'Deploy to the staging environment'
-  dependsOn: Dev
+  displayName: 'Deploy to the Prod environment'
+  dependsOn: Staging
   jobs:
   - deployment: ProdDeploy
     pool:
