@@ -71,7 +71,7 @@ stages:
   dependsOn: Build
   condition:  succeeded()
   jobs:
-  - deployment: Deploy
+  - deployment: DevDeploy
     pool:
       vmImage: 'ubuntu-20.04'
     environment: dev
@@ -95,7 +95,7 @@ stages:
   displayName: 'Deploy to the staging environment'
   dependsOn: Dev
   jobs:
-  - deployment: Deploy
+  - deployment: StagingDeploy
     pool:
       vmImage: 'ubuntu-20.04'
     environment: staging
@@ -113,4 +113,30 @@ stages:
               azureSubscription: 'Visual Studio Enterprise Subscription(be40f85a-7ca1-48fb-bfb5-11fe1320e9a8)'
               appType: 'webAppLinux'
               appName: '$(WebAppNameStaging)'
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+
+- stage: 'Production'
+  displayName: 'Deploy to the staging environment'
+  dependsOn: Dev
+  jobs:
+  - deployment: ProdDeploy
+    pool:
+      vmImage: 'ubuntu-20.04'
+    environment: Production
+    variables:
+    - group: 'Release'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'Visual Studio Enterprise Subscription(be40f85a-7ca1-48fb-bfb5-11fe1320e9a8)'
+              appType: 'webAppLinux'
+              appName: 'tailspin-space-game-web-prod-9657'
+              deployToSlotOrASE: true
+              resourceGroupName: 'tailspin-space-game-rg'
+              slotName: 'production'
               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
