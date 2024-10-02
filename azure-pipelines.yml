@@ -138,5 +138,5 @@ stages:
               appName: 'tailspin-space-game-web-prod-9657'
               deployToSlotOrASE: true
               resourceGroupName: 'tailspin-space-game-rg'
-              slotName: 'production'
+              slotName: 'slot1'
               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
